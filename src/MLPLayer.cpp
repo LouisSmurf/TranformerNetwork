@@ -24,21 +24,23 @@ void MLPLayer::initialiseWeights() {
     }
 }
 
-Eigen::VectorXf MLPLayer::forward(const Eigen::VectorXf& input) {
-    lastInput = input; 
-    lastPreActivation = (weights * input) + biases;
+Eigen::MatrixXf MLPLayer::forward(const Eigen::MatrixXf& input) {
+    lastInput = input;  //[tokensSize, inputSize]
+    lastPreActivation = (input * weights.transpose()).rowwise() + biases.transpose();
     lastOutput = activationFunction.compute(lastPreActivation);
-    return lastOutput;
+    return lastOutput; // [tokenSize, outputSize]
 }
 
-Eigen::VectorXf MLPLayer::backward(const Eigen::VectorXf& outputGradient, float learningRate) {
-    Eigen::VectorXf delta(outputSize);
-    delta = outputGradient.cwiseProduct(activationFunction.computeDerivative(lastPreActivation));
+Eigen::MatrixXf MLPLayer::backward(const Eigen::MatrixXf& outputGradient, float learningRate) {
+    //[tokenSize, outputSize]
+    Eigen::MatrixXf delta = outputGradient.cwiseProduct(activationFunction.computeDerivative(lastPreActivation));
 
-    Eigen::VectorXf inputGradient = weights.transpose() * delta;
+    Eigen::MatrixXf inputGradient = delta * weights; // [tokenSize, inputSize]
+    Eigen::MatrixXf dWeights = delta.transpose() * lastInput; //[outputSize, inputSize]
+    Eigen::VectorXf dBiases = delta.colwise().sum();
 
-    weights -= learningRate * delta * lastInput.transpose();
-    biases -= learningRate * delta;
+    weights -= learningRate * dWeights;
+    biases -= learningRate * dBiases;
 
     return inputGradient;
 }

@@ -14,9 +14,9 @@ struct MLPLayer {
     
     ActivationFunction activationFunction;
     
-    Eigen::VectorXf lastInput;
-    Eigen::VectorXf lastPreActivation;
-    Eigen::VectorXf lastOutput;
+    Eigen::MatrixXf lastInput;
+    Eigen::MatrixXf lastPreActivation;
+    Eigen::MatrixXf lastOutput;
 
     // Constructor
     MLPLayer(int input, int output, ActivationFunction activation);
@@ -24,9 +24,9 @@ struct MLPLayer {
     // Member Functions
     void initialiseWeights();
     
-    Eigen::VectorXf forward(const Eigen::VectorXf& input);
+    Eigen::MatrixXf forward(const Eigen::MatrixXf& input);
     
-    Eigen::VectorXf backward(const Eigen::VectorXf& outputGradient, float learningRate);
+    Eigen::MatrixXf backward(const Eigen::MatrixXf& outputGradient, float learningRate);
 };
 
 #endif

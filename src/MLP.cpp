@@ -2,6 +2,10 @@
 #include <iostream>
 
 
+//NOT NEEDED ANYMORE REDUNDENT
+//doesnt use matricies
+//MLPLayer.cpp now uses matricies
+
 const float EPSILON = 1e-9f;
 
 //softmax(gemini generated)
