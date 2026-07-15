@@ -1,4 +1,6 @@
-#include <iostream>
+#ifndef MLP_H
+#define MLP_H
+
 #include <vector>
 #include <cmath>
 #include <random>
@@ -9,8 +11,9 @@
 #include <iterator>
 #include <algorithm>
 #include <fstream>
-#include "MLP.h"
+
+#include "MLPLayer.h"
 
 
-int main() {
-}
+
+#endif
