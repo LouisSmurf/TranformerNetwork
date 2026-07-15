@@ -1,0 +1,13 @@
+# ninja log v7
+2680	3735	8058222351927749	CMakeFiles/Network.dir/src/main.cpp.obj	c1697752cd123272
+2692	4036	8058222352043764	CMakeFiles/Network.dir/src/MLP.cpp.obj	13abb91649b30ef6
+2698	4011	8058222352120368	CMakeFiles/Network.dir/src/HelperFunctions.cpp.obj	26ff7a5ba785c6ca
+2686	4168	8058222351988314	CMakeFiles/Network.dir/src/MLPLayer.cpp.obj	243ee024fede2fec
+4168	4298	8058222366819300	Network.exe	de4e4468e896b761
+33	2679	8058222325459740	CMakeFiles/Network.dir/cmake_pch.hxx.pch	33a2c7d612a6c48e
+20	2637	8058224970006673	CMakeFiles/Network.dir/cmake_pch.hxx.pch	33a2c7d612a6c48e
+2638	3784	8058224996187301	CMakeFiles/Network.dir/src/main.cpp.obj	c1697752cd123272
+2659	4068	8058224996396620	CMakeFiles/Network.dir/src/HelperFunctions.cpp.obj	26ff7a5ba785c6ca
+2651	4105	8058224996317604	CMakeFiles/Network.dir/src/MLP.cpp.obj	13abb91649b30ef6
+2646	4183	8058224996262403	CMakeFiles/Network.dir/src/MLPLayer.cpp.obj	243ee024fede2fec
+4183	4310	8058225011630776	Network.exe	de4e4468e896b761

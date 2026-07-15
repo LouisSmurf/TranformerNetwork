@@ -1,22 +1,22 @@
 #ifndef MLP_LAYER_CPP
 #define MLP_LAYER_CPP
 
-#include <vector>
 #include <random>
 #include "HelperFunctions.h"
+#include <Eigen/Dense>
 
 struct MLPLayer {
     int inputSize;
     int outputSize;
     
-    std::vector<std::vector<float>> weights;
-    std::vector<float> biases;
+    Eigen::MatrixXf weights;
+    Eigen::VectorXf biases;
     
     ActivationFunction activationFunction;
     
-    std::vector<float> lastInput;
-    std::vector<float> lastPreActivation;
-    std::vector<float> lastOutput;
+    Eigen::VectorXf lastInput;
+    Eigen::VectorXf lastPreActivation;
+    Eigen::VectorXf lastOutput;
 
     // Constructor
     MLPLayer(int input, int output, ActivationFunction activation);
@@ -24,9 +24,9 @@ struct MLPLayer {
     // Member Functions
     void initialiseWeights();
     
-    std::vector<float> forward(const std::vector<float>& input);
+    Eigen::VectorXf forward(const Eigen::VectorXf& input);
     
-    std::vector<float> backward(const std::vector<float>& outputGradient, float learningRate);
+    Eigen::VectorXf backward(const Eigen::VectorXf& outputGradient, float learningRate);
 };
 
 #endif

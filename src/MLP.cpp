@@ -1,69 +1,60 @@
 #include "MLP.h"
+#include <iostream>
 
-//softmax
-std::vector<float> softmax(const std::vector<float>& x) {
-    std::vector<float> output(x.size());
-    if (x.empty()) return output;
-    float sum = 0.0f;
-    for(int i = 0; i < x.size(); ++i) {
-        output[i] = std::exp(x[i]);
-        sum += output[i];
-    }
-    for(int i = 0; i <x.size(); ++i) {
-        output[i] /= sum + EPSILON; //small epsilon to avoid zero division errors
-    }
+
+const float EPSILON = 1e-9f;
+
+//softmax(gemini generated)
+Eigen::VectorXf softmax(const Eigen::VectorXf& x) {
+    if (x.size() == 0) return Eigen::VectorXf(0);
+    
+    float max = x.maxCoeff();
+    Eigen::VectorXf output = (x.array() - max).exp();
+    float sum = output.sum();
+    output /= sum + EPSILON; //small epsilon to avoid zero division errors
+
+    std::cout << "returning output" << std::endl;
     return output;
 }
 
-std::vector<float> softmaxDerivativeBackward(const std::vector<float>& softmaxOutput, const std::vector<float>& outputGradient) {
-    std::vector<float> inputGradient(softmaxOutput.size(), 0.0f);
-    for (int i = 0; i < softmaxOutput.size(); ++i) {
-        for (int j = 0; j < softmaxOutput.size(); ++j) {
-            float derivative;
-            if (i == j) {
-                derivative = softmaxOutput[i] * (1.0f - softmaxOutput[i]);
-            } 
-            else {
-                derivative = -softmaxOutput[i] * softmaxOutput[j];
-            }
-            inputGradient[i] += outputGradient[j] * derivative;
-        }
-    }
-    return inputGradient;
+Eigen::VectorXf softmaxDerivativeBackward(const Eigen::VectorXf& softmaxOutput, const Eigen::VectorXf& outputGradient) {
+    Eigen::MatrixXf diagSoftmax = softmaxOutput.asDiagonal();
+    Eigen::MatrixXf outerSoftmax = softmaxOutput * softmaxOutput.transpose();
+    Eigen::MatrixXf jacobian = diagSoftmax - outerSoftmax;
+
+    return jacobian * outputGradient;
 }
 
 //MLP
-struct MLP{
-    std::vector<MLPLayer> layers;
-    LossFunction loss;
-    ActivationFunction activation;
-    bool softmaxOutput = false;
+MLP::MLP(std::vector<int> layerSizes, ActivationFunction activationFunction, LossFunction lossFunction, bool useSoftmaxOutput) : activation(activationFunction), loss(lossFunction), softmaxOutput(useSoftmaxOutput) {
+    for (int i = 0; i < layerSizes.size() - 1; ++i) {
+        layers.push_back(MLPLayer(layerSizes[i], layerSizes[i + 1], activation));
+    }
+}
 
-    MLP(std::vector<int> layerSizes, ActivationFunction activationFunction = ActivationFunctions::ReLU, LossFunction lossFunction = LossFunctions::mseLoss, bool useSoftmaxOutput = false) : activation(activationFunction), loss(lossFunction), softmaxOutput(useSoftmaxOutput) {
-        for (int i = 0; i < layerSizes.size() - 1; ++i) {
-            layers.push_back(MLPLayer(layerSizes[i], layerSizes[i + 1], activation));
-        }
+Eigen::VectorXf MLP::forward(const Eigen::VectorXf& input) {
+    Eigen::VectorXf output = input;
+    for (MLPLayer& layer : layers) {
+        output = layer.forward(output);
     }
 
-    std::vector<float> forward(const std::vector<float>& input) {
-        std::vector<float> output = input;
-        for (MLPLayer& layer : layers) {
-            output = layer.forward(output);
-        }
-        if (softmaxOutput) { output = softmax(output); }
-        return output;
+    if (softmaxOutput) { output = softmax(output); }
+    return output;
+}
+
+float MLP::train(const Eigen::VectorXf& input, const Eigen::VectorXf& target, float learningRate) {
+    Eigen::VectorXf predicted = forward(input);
+    float lossValue = loss.compute(predicted, target);
+
+    Eigen::VectorXf lossGradient = loss.computeDerivative(predicted, target);
+
+    if (softmaxOutput) {
+        lossGradient = softmaxDerivativeBackward(predicted, lossGradient);
     }
 
-    float train(const std::vector<float>& input, const std::vector<float>& target, float learningRate) {
-        std::vector<float> predicted = forward(input);
-        float lossValue = loss.compute(predicted, target);
-    
-        // Get the gradient
-        std::vector<float> lossGradient = loss.computeDerivative(predicted, target);
-
-        for (int i = layers.size() - 1; i >= 0; --i) {
-            lossGradient = layers[i].backward(lossGradient, learningRate);
-        }
-        return lossValue;
+    for (int i = layers.size() - 1; i >= 0; --i) {
+        lossGradient = layers[i].backward(lossGradient, learningRate);
     }
-};
+
+    return lossValue;
+}
