@@ -1,8 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"D:/Code/transformer network/TranformerNetwork/build/cmake_install.cmake",
-		"D:/Code/transformer network/TranformerNetwork/build/_deps/json-build/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

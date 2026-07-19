@@ -14,8 +14,8 @@ __pycache__/
 *.pyc
 
 # Build files
-build/
-cmake-build-*/
+# build/
+# cmake-build-*/
 
 # CMake generated files
 CMakeCache.txt

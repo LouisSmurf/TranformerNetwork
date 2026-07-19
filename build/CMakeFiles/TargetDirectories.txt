@@ -1,5 +1,0 @@
-D:/Code/transformer network/TranformerNetwork/build/CMakeFiles/Network.dir
-D:/Code/transformer network/TranformerNetwork/build/CMakeFiles/edit_cache.dir
-D:/Code/transformer network/TranformerNetwork/build/CMakeFiles/rebuild_cache.dir
-D:/Code/transformer network/TranformerNetwork/build/_deps/json-build/CMakeFiles/edit_cache.dir
-D:/Code/transformer network/TranformerNetwork/build/_deps/json-build/CMakeFiles/rebuild_cache.dir
