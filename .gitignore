@@ -1,0 +1,36 @@
+# Discord data (private)
+discord.json
+
+# Data generation scripts
+generateData.py
+
+# Generated training data
+dataset.txt
+vocab.json
+tokens.json
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Build files
+build/
+cmake-build-*/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+
+# Executables
+*.exe
+*.out
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

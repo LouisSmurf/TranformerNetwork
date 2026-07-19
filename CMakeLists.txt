@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14) # Upgraded to 3.14+ for optimal FetchContent support
 project(TranformerNetwork VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -21,11 +21,27 @@ else()
     add_compile_options(-O3 -march=native -ffast-math)
 endif()
 
+# --- Fetch and Include nlohmann/json ---
+include(FetchContent)
+
+FetchContent_Declare(
+    json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG        v3.11.3 # Uses the stable 3.11.3 release
+)
+
+FetchContent_MakeAvailable(json)
+# --------------------------------------
+
 add_executable(Network 
     src/main.cpp 
-    src/MLPLayer.cpp 
-    src/MLP.cpp
+    src/MLP/MLPLayer.cpp 
+    src/MLP/MultiLayerMLP.cpp
+    src/MLP/MLP.cpp
     src/HelperFunctions.cpp
+    src/Attention/Attention.cpp
+    src/NormalLayer.cpp
+    src/Transformer/TransformerBlock.cpp
 )
 
 target_include_directories(Network PUBLIC 
@@ -33,6 +49,9 @@ target_include_directories(Network PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/libraries
 )
 
-# 3. Optional: Add a Precompiled Header (PCH) for faster compile times
+# 3. Link the JSON library to your executable
+target_link_libraries(Network PRIVATE nlohmann_json::nlohmann_json)
+
+# 4. Optional: Add a Precompiled Header (PCH) for faster compile times
 # If you include <Eigen/Dense> in many files, this will speed up compilation significantly
 target_precompile_headers(Network PRIVATE <Eigen/Dense>)
